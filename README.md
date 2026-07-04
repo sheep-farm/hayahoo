@@ -61,6 +61,10 @@ let sym = yahoo::search_symbol("apple")
 - Yahoo Finance endpoints are unofficial and may change or rate-limit clients.
 - A browser-like `User-Agent` is sent automatically.
 - `set_apikey()` exists only for symmetry with `hayfred`; it is a no-op.
+- **Use this plugin at your own risk.** The authors do not endorse any use
+  that violates Yahoo's Terms of Service or other applicable policies. You are
+  responsible for ensuring your use of Yahoo Finance data complies with all
+  relevant terms and regulations.
 
 ## License
 
