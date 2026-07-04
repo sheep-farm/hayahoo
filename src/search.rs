@@ -26,7 +26,7 @@ pub fn search(
         ("newsCount", if news == "true" { "10" } else { "0" }),
     ];
 
-    let json = yahoo_request(path, &params)?;
+    let json = yahoo_request_public(path, &params)?;
     let results = json["quotes"].as_array().ok_or("missing quotes")?;
 
     let columns: Vec<(&str, Vec<String>)> = vec![
@@ -77,7 +77,7 @@ pub fn search_symbol(query: String) -> Result<String, String> {
         ("quotesCount", "1"),
         ("quotesQueryId", "tss_match_phrase"),
     ];
-    let json = yahoo_request(path, &params)?;
+    let json = yahoo_request_public(path, &params)?;
     let result = json["quotes"]
         .as_array()
         .and_then(|arr| arr.first())

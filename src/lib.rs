@@ -1,5 +1,4 @@
 pub mod history;
-pub mod info;
 pub mod quote;
 pub mod search;
 pub mod utils;

@@ -18,14 +18,18 @@ import("sheep-farm/hayahoo", as=yahoo)
 ```hay
 let q = yahoo::quote("AAPL")
 let p = yahoo::price("AAPL")
-let c = yahoo::currency("PETR4.SA")
+let c = yahoo::change("AAPL")
+let cur = yahoo::currency("PETR4.SA")
 let n = yahoo::name("MSFT")
+let wk = yahoo::fifty_two_week("AAPL")
 
 let table = yahoo::quotes(["AAPL", "MSFT", "PETR4.SA", "BTC-USD"])
 ```
 
-`quote()` returns a dictionary with the raw Yahoo quote response.
-`quotes()` returns a DataFrame with common fields for every ticker.
+`quote()` returns a dictionary with the chart metadata (price, currency,
+previous close, volume, etc.). `quotes()` returns a DataFrame with common
+fields for every ticker. `change()` returns the percentage move from the
+previous close.
 
 ### Historical data
 
@@ -51,23 +55,6 @@ let sym = yahoo::search_symbol("apple")
 
 `search()` returns a DataFrame of matching tickers, companies, ETFs and indices.
 `search_symbol()` returns the best single match symbol.
-
-### Company info
-
-```hay
-let info = yahoo::info("AAPL", {})
-let stats = yahoo::key_statistics("AAPL")
-let fin = yahoo::financial_data("AAPL")
-let prof = yahoo::profile("AAPL")
-```
-
-`info()` fetches Yahoo `quoteSummary` modules. The default modules are
-`summaryProfile,financialData,defaultKeyStatistics,price`.
-Use the `modules` option to request others, e.g.:
-
-```hay
-let info = yahoo::info("AAPL", {"modules": "incomeStatementHistory,balanceSheetHistory"})
-```
 
 ## Notes
 

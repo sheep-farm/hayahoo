@@ -46,7 +46,7 @@ pub fn history(
         params.push(("period2", p2.as_str()));
     }
 
-    let json = yahoo_request(&path, &params)?;
+    let json = yahoo_request_public(&path, &params)?;
     let result = json["chart"]["result"]
         .as_array()
         .and_then(|arr| arr.first())
