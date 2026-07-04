@@ -1,0 +1,13 @@
+import("sheep-farm/hayahoo", as=yahoo)
+
+let price = yahoo::price("AAPL")
+let quote = yahoo::quote("AAPL")
+let hist = yahoo::history("AAPL", {"range": "3mo", "interval": "1d"})
+let search = yahoo::search("petrobras", {"limit": 5})
+let info = yahoo::info("AAPL", {})
+
+price
+quote
+hist
+search
+info
