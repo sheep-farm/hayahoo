@@ -13,20 +13,14 @@ use std::sync::Arc;
 ///   - `interval`: e.g. "1d", "1wk", "1mo" (default "1d")
 ///   - `range`: e.g. "1y", "5y", "max" (default "1y")
 #[hayashi_fn]
-pub fn history(
-    ticker: String,
-    options: HashMap<String, HayashiValue>,
-) -> Result<ArrayRef, String> {
+pub fn history(ticker: String, options: HashMap<String, HayashiValue>) -> Result<ArrayRef, String> {
     let interval = opt_str(&options, "interval").unwrap_or_else(|| "1d".to_string());
     let range = opt_str(&options, "range").unwrap_or_else(|| "1y".to_string());
     let start = opt_str(&options, "start");
     let end = opt_str(&options, "end");
 
     let path = format!("/v8/finance/chart/{}", ticker);
-    let mut params = vec![
-        ("interval", interval.as_str()),
-        ("range", range.as_str()),
-    ];
+    let mut params = vec![("interval", interval.as_str()), ("range", range.as_str())];
 
     let period1: Option<i64> = start
         .as_ref()
@@ -89,13 +83,34 @@ pub fn history(
     }
 
     let fields: Vec<(Arc<Field>, ArrayRef)> = vec![
-        (Arc::new(Field::new("date", DataType::Utf8, false)), Arc::new(StringArray::from(dates)) as ArrayRef),
-        (Arc::new(Field::new("open", DataType::Float64, true)), Arc::new(Float64Array::from(open)) as ArrayRef),
-        (Arc::new(Field::new("high", DataType::Float64, true)), Arc::new(Float64Array::from(high)) as ArrayRef),
-        (Arc::new(Field::new("low", DataType::Float64, true)), Arc::new(Float64Array::from(low)) as ArrayRef),
-        (Arc::new(Field::new("close", DataType::Float64, true)), Arc::new(Float64Array::from(close)) as ArrayRef),
-        (Arc::new(Field::new("adj_close", DataType::Float64, true)), Arc::new(Float64Array::from(adj_close)) as ArrayRef),
-        (Arc::new(Field::new("volume", DataType::Float64, true)), Arc::new(Float64Array::from(volume)) as ArrayRef),
+        (
+            Arc::new(Field::new("date", DataType::Utf8, false)),
+            Arc::new(StringArray::from(dates)) as ArrayRef,
+        ),
+        (
+            Arc::new(Field::new("open", DataType::Float64, true)),
+            Arc::new(Float64Array::from(open)) as ArrayRef,
+        ),
+        (
+            Arc::new(Field::new("high", DataType::Float64, true)),
+            Arc::new(Float64Array::from(high)) as ArrayRef,
+        ),
+        (
+            Arc::new(Field::new("low", DataType::Float64, true)),
+            Arc::new(Float64Array::from(low)) as ArrayRef,
+        ),
+        (
+            Arc::new(Field::new("close", DataType::Float64, true)),
+            Arc::new(Float64Array::from(close)) as ArrayRef,
+        ),
+        (
+            Arc::new(Field::new("adj_close", DataType::Float64, true)),
+            Arc::new(Float64Array::from(adj_close)) as ArrayRef,
+        ),
+        (
+            Arc::new(Field::new("volume", DataType::Float64, true)),
+            Arc::new(Float64Array::from(volume)) as ArrayRef,
+        ),
     ];
 
     Ok(Arc::new(StructArray::from(fields)))

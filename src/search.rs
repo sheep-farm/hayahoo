@@ -10,11 +10,11 @@ use std::collections::HashMap;
 ///   - `quotes`: include quotes in results (default true)
 ///   - `news`: include news in results (default false)
 #[hayashi_fn]
-pub fn search(
-    query: String,
-    options: HashMap<String, HayashiValue>,
-) -> Result<ArrayRef, String> {
-    let limit = opt_i64(&options, "limit").unwrap_or(10).clamp(1, 50).to_string();
+pub fn search(query: String, options: HashMap<String, HayashiValue>) -> Result<ArrayRef, String> {
+    let limit = opt_i64(&options, "limit")
+        .unwrap_or(10)
+        .clamp(1, 50)
+        .to_string();
     let quotes = opt_str(&options, "quotes").unwrap_or_else(|| "true".to_string());
     let news = opt_str(&options, "news").unwrap_or_else(|| "false".to_string());
 
@@ -22,7 +22,14 @@ pub fn search(
     let params = [
         ("q", query.as_str()),
         ("quotesCount", limit.as_str()),
-        ("quotesQueryId", if quotes == "true" { "tss_match_phrase" } else { "" }),
+        (
+            "quotesQueryId",
+            if quotes == "true" {
+                "tss_match_phrase"
+            } else {
+                ""
+            },
+        ),
         ("newsCount", if news == "true" { "10" } else { "0" }),
     ];
 
@@ -30,19 +37,72 @@ pub fn search(
     let results = json["quotes"].as_array().ok_or("missing quotes")?;
 
     let columns: Vec<(&str, Vec<String>)> = vec![
-        ("symbol", results.iter().map(|r| json_str(r, "symbol")).collect::<Vec<_>>()),
-        ("shortname", results.iter().map(|r| json_str(r, "shortname")).collect::<Vec<_>>()),
-        ("longname", results.iter().map(|r| json_str(r, "longname")).collect::<Vec<_>>()),
-        ("exch", results.iter().map(|r| json_str(r, "exch")).collect::<Vec<_>>()),
-        ("type", results.iter().map(|r| json_str(r, "type")).collect::<Vec<_>>()),
-        ("typeDisp", results.iter().map(|r| json_str(r, "typeDisp")).collect::<Vec<_>>()),
-        ("sector", results.iter().map(|r| json_str(r, "sector")).collect::<Vec<_>>()),
-        ("industry", results.iter().map(|r| json_str(r, "industry")).collect::<Vec<_>>()),
+        (
+            "symbol",
+            results
+                .iter()
+                .map(|r| json_str(r, "symbol"))
+                .collect::<Vec<_>>(),
+        ),
+        (
+            "shortname",
+            results
+                .iter()
+                .map(|r| json_str(r, "shortname"))
+                .collect::<Vec<_>>(),
+        ),
+        (
+            "longname",
+            results
+                .iter()
+                .map(|r| json_str(r, "longname"))
+                .collect::<Vec<_>>(),
+        ),
+        (
+            "exch",
+            results
+                .iter()
+                .map(|r| json_str(r, "exch"))
+                .collect::<Vec<_>>(),
+        ),
+        (
+            "type",
+            results
+                .iter()
+                .map(|r| json_str(r, "type"))
+                .collect::<Vec<_>>(),
+        ),
+        (
+            "typeDisp",
+            results
+                .iter()
+                .map(|r| json_str(r, "typeDisp"))
+                .collect::<Vec<_>>(),
+        ),
+        (
+            "sector",
+            results
+                .iter()
+                .map(|r| json_str(r, "sector"))
+                .collect::<Vec<_>>(),
+        ),
+        (
+            "industry",
+            results
+                .iter()
+                .map(|r| json_str(r, "industry"))
+                .collect::<Vec<_>>(),
+        ),
     ];
 
     let mut mixed: Vec<(&str, Vec<HayashiValue>)> = columns
         .into_iter()
-        .map(|(name, vals)| (name, vals.into_iter().map(HayashiValue::Str).collect::<Vec<_>>()))
+        .map(|(name, vals)| {
+            (
+                name,
+                vals.into_iter().map(HayashiValue::Str).collect::<Vec<_>>(),
+            )
+        })
         .collect();
 
     if let Some(exchange_arr) = json["exchanges"].as_array() {

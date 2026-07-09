@@ -110,7 +110,11 @@ pub fn quotes(tickers: Vec<String>) -> Result<ArrayRef, String> {
             "name".to_string(),
             HayashiValue::Str({
                 let n = json_str(meta, "longName");
-                if !n.is_empty() { n } else { json_str(meta, "shortName") }
+                if !n.is_empty() {
+                    n
+                } else {
+                    json_str(meta, "shortName")
+                }
             }),
         );
         let change_pct = match (
@@ -143,13 +147,31 @@ pub fn quotes(tickers: Vec<String>) -> Result<ArrayRef, String> {
     ];
 
     for mut row in rows {
-        columns[0].1.push(row.remove("symbol").unwrap_or(HayashiValue::Str(String::new())));
-        columns[1].1.push(row.remove("price").unwrap_or(HayashiValue::Float(0.0)));
-        columns[2].1.push(row.remove("currency").unwrap_or(HayashiValue::Str(String::new())));
-        columns[3].1.push(row.remove("name").unwrap_or(HayashiValue::Str(String::new())));
-        columns[4].1.push(row.remove("change_pct").unwrap_or(HayashiValue::Float(0.0)));
-        columns[5].1.push(row.remove("previous_close").unwrap_or(HayashiValue::Float(0.0)));
-        columns[6].1.push(row.remove("volume").unwrap_or(HayashiValue::Float(0.0)));
+        columns[0].1.push(
+            row.remove("symbol")
+                .unwrap_or(HayashiValue::Str(String::new())),
+        );
+        columns[1]
+            .1
+            .push(row.remove("price").unwrap_or(HayashiValue::Float(0.0)));
+        columns[2].1.push(
+            row.remove("currency")
+                .unwrap_or(HayashiValue::Str(String::new())),
+        );
+        columns[3].1.push(
+            row.remove("name")
+                .unwrap_or(HayashiValue::Str(String::new())),
+        );
+        columns[4]
+            .1
+            .push(row.remove("change_pct").unwrap_or(HayashiValue::Float(0.0)));
+        columns[5].1.push(
+            row.remove("previous_close")
+                .unwrap_or(HayashiValue::Float(0.0)),
+        );
+        columns[6]
+            .1
+            .push(row.remove("volume").unwrap_or(HayashiValue::Float(0.0)));
     }
 
     build_mixed_df(columns)
