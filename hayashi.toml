@@ -1,0 +1,10 @@
+[plugin]
+name = "hayahoo"
+version = "0.1.1"
+author = "sheep-farm"
+description = "A native Yahoo Finance plugin for Hayashi"
+license = "MIT"
+repository = "https://github.com/sheep-farm/hayahoo"
+
+[hayashi]
+min_version = "0.2.0"
