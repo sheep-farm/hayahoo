@@ -1,6 +1,6 @@
 [plugin]
 name = "hayahoo"
-version = "0.1.1"
+version = "0.1.4"
 author = "sheep-farm"
 description = "A native Yahoo Finance plugin for Hayashi"
 license = "MIT"

@@ -20,7 +20,6 @@ pub fn history(ticker: String, options: HashMap<String, HayashiValue>) -> Result
     let end = opt_str(&options, "end");
 
     let path = format!("/v8/finance/chart/{}", ticker);
-    let mut params = vec![("interval", interval.as_str()), ("range", range.as_str())];
 
     let period1: Option<i64> = start
         .as_ref()
@@ -31,13 +30,25 @@ pub fn history(ticker: String, options: HashMap<String, HayashiValue>) -> Result
         .and_then(|e| parse_date(e))
         .map(|d| d.and_hms_opt(23, 59, 59).unwrap().and_utc().timestamp());
 
+    // Yahoo Finance API expects EITHER a relative window (range) OR an
+    // absolute window (period1/period2). Sending both together is undefined
+    // behavior — the API silently honors `range` and discards period1/period2,
+    // capping monthly requests at ~13 observations regardless of start/end.
+    // Use the absolute window when both bounds are available; otherwise fall
+    // back to the relative `range` (default "1y").
+    let has_period = period1.is_some() && period2.is_some();
+    let mut params: Vec<(&str, &str)> = vec![("interval", interval.as_str())];
     let period1_str: Option<String> = period1.map(|p| p.to_string());
     let period2_str: Option<String> = period2.map(|p| p.to_string());
-    if let Some(ref p1) = period1_str {
-        params.push(("period1", p1.as_str()));
-    }
-    if let Some(ref p2) = period2_str {
-        params.push(("period2", p2.as_str()));
+    if has_period {
+        if let Some(ref p1) = period1_str {
+            params.push(("period1", p1.as_str()));
+        }
+        if let Some(ref p2) = period2_str {
+            params.push(("period2", p2.as_str()));
+        }
+    } else {
+        params.push(("range", range.as_str()));
     }
 
     let json = yahoo_request_public(&path, &params)?;
